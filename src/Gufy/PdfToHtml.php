@@ -12,12 +12,7 @@ namespace Gufy;
 
 class PdfToHtml
 {
-	private $options=array(
-		'singlePage'=>false,
-		'imageJpeg'=>false,
-		'ignoreImages'=>false,
-		'zoom'=>1.5,
-	);
+	private $options;
 	private $outputDir;
 	private $bin="/usr/bin/pdftohtml";
 	private $file;
@@ -27,15 +22,12 @@ class PdfToHtml
 	* @param array $options configuration for converting
 	* @return $this current object
 	*/
-	public function __construct($pdfFile='', $options=array())
+	public function __construct($pdfFile='', $options='')
 	{
 		if(empty($pdfFile))
 			return $this;
 		$pdf = $this;
-		if(!empty($options))
-		array_walk($options, function($value) use($pdf){
-			$pdf->setOptions($key, $value);
-		});
+		$this->options = $options;
 		return $this->open($pdfFile);
 	}
 	/**
@@ -57,7 +49,7 @@ class PdfToHtml
 	{
 		$output = $this->outputDir."/".preg_replace("/\.pdf$/","",basename($this->file)).".html";
 		$options = $this->generateOptions();
-		$command = $this->bin." ".$options." ".$this->file." ".$output;
+		$command = $this->bin." ".$this->options." ".$this->file." ".$output;
 		$result = exec($command);
 		return $this;
 	}
